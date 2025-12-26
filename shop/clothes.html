@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothes - fripe.tn</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Croissant+One&family=Madimi+One&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/cart.css">
+    <link rel="stylesheet" href="../assets/css/shop.css">
+    
+    <style>
+        /* Clothes specific */
+        .shop-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.194), rgba(0, 0, 0, 0.139)), 
+                        url('../assets/images/background/clothes1.jpg');
+            background-position: center;
+        }
+        
+        /* DYNAMIC HORIZONTAL FILTER SYSTEM */
+        .filters-container {
+            max-width: 1400px;
+            margin: 40px auto 30px;
+            padding: 0 20px;
+        }
+        
+        /* Main Filter Bar - FIXED CONTAINER */
+        .filters-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 71, 87, 0.05));
+            border-radius: 20px;
+            padding: 25px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        /* Filter Toggle for Mobile */
+        .filter-toggle {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3);
+        }
+        
+        /* Filter Section - FIXED CONTAINMENT */
+        .filter-section {
+            position: relative;
+            min-height: 100px;
+        }
+        
+        .filter-section.apply-section {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .filter-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-header:hover {
+            border-bottom-color: rgba(255, 71, 87, 0.5);
+        }
+        
+        .filter-header h3 {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 71, 87, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff4757;
+            font-size: 0.9rem;
+        }
+        
+        /* Dropdown Content with HOVER SAFE ZONE */
+        .filter-content {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: rgba(25, 25, 35, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            min-width: 280px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        
+        /* Hover safe zone extension */
+        .filter-content::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: transparent;
+        }
+        
+        /* Price dropdown specific width */
+        .filter-section#priceFilter .filter-content {
+            min-width: 320px;
+        }
+        
+        /* Make sure right-side dropdowns don't go off screen */
+        .filter-section:nth-child(4) .filter-content,
+        .filter-section:nth-child(5) .filter-content {
+            left: auto;
+            right: 0;
+        }
+        
+        .filter-section:hover .filter-content,
+        .filter-section.active .filter-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        /* Right-side dropdowns for price and sort */
+        .filter-section:nth-child(4):hover .filter-content,
+        .filter-section:nth-child(4).active .filter-content,
+        .filter-section:nth-child(5):hover .filter-content,
+        .filter-section:nth-child(5).active .filter-content {
+            transform: translateY(0);
+        }
+        
+        /* Filter Buttons Grid */
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+        
+        .filter-option {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .filter-option:hover {
+            background: rgba(255, 71, 87, 0.15);
+            border-color: rgba(255, 71, 87, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .filter-option.active {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            border-color: #ff4757;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+        }
+        
+        /* Size Filter Options */
+        .size-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .size-option {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .size-option:hover {
+            background: rgba(255, 71, 87, 0.15);
+            border-color: rgba(255, 71, 87, 0.3);
+        }
+        
+        .size-option.active {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            border-color: #ff4757;
+            color: white;
+        }
+        
+        /* Price Range Styling */
+        .price-range-content {
+            padding: 15px;
+        }
+        
+        .price-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .price-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff4757;
+            text-shadow: 0 2px 10px rgba(255, 71, 87, 0.3);
+        }
+        
+        .price-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .price-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            margin: 20px 0;
+        }
+        
+        .price-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #ff4757;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .price-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(255, 71, 87, 1);
+        }
+        
+        /* Apply Button - FIXED POSITION */
+        .apply-btn {
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .apply-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .apply-btn:hover::before {
+            left: 100%;
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 71, 87, 0.6);
+        }
+        
+        /* Active Filters Bar */
+        .active-filters-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 25px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 60px;
+            transition: all 0.3s ease;
+        }
+        
+        .active-filters-bar.expanded {
+            background: rgba(255, 71, 87, 0.05);
+            border-color: rgba(255, 71, 87, 0.2);
+        }
+        
+        .filter-count {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff4757;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .filter-count-badge {
+            background: #ff4757;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.2);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .filter-tag:hover {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: rgba(255, 71, 87, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .tag-remove {
+            color: #ff4757;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tag-remove:hover {
+            background: #ff4757;
+            color: white;
+            transform: rotate(90deg);
+        }
+        
+        .clear-all-btn {
+            margin-left: auto;
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .clear-all-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 71, 87, 0.4);
+            color: #ff4757;
+        }
+        
+        /* Filter Status */
+        .filter-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: rgba(255, 71, 87, 0.05);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .results-count {
+            font-weight: 600;
+            color: #ff4757;
+        }
+        
+        /* Consistent dropdown widths */
+        .filter-section:not(#priceFilter) .filter-content {
+            min-width: 220px;
+            max-width: 280px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .filters-bar {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .filter-section.apply-section {
+                grid-column: 1 / -1;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .filters-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .filters-container {
+                padding: 0 15px;
+            }
+            
+            .filter-toggle {
+                display: flex;
+            }
+            
+            .filters-bar {
+                display: none;
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .filters-bar.active {
+                display: grid;
+            }
+            
+            /* Mobile dropdown fixes */
+            .filter-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                margin-top: 10px;
+                display: none;
+                box-shadow: none;
+                background: rgba(255, 255, 255, 0.03);
+                min-width: 100% !important;
+                max-width: 100% !important;
+                left: 0 !important;
+                transform: none !important;
+            }
+            
+            .filter-section#priceFilter .filter-content {
+                left: 0;
+                transform: none;
+            }
+            
+            .filter-section.active .filter-content {
+                display: block;
+            }
+            
+            .filter-section:hover .filter-content,
+            .filter-section.active .filter-content {
+                transform: none;
+            }
+            
+            .active-filters-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .filter-tags {
+                justify-content: center;
+            }
+            
+            .clear-all-btn {
+                margin-left: 0;
+                align-self: center;
+            }
+            
+            .size-options {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <a href="../index.html" class="logo">fripe<span>.</span>tn</a>
+        
+        <nav class="main-nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="active">Shop <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="perfumes.html">Perfumes</a>
+                        <a href="clothes.html" class="active">Clothes</a>
+                        <a href="shoes.html">Shoes</a>
+                    </div>
+                </li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-actions">
+            <button class="cart-btn">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+            </button>
+            <button class="theme-btn">
+                <i class="fas fa-sun"></i>
+            </button>
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Shop Header -->
+    <section class="shop-header">
+        <div class="container">
+            <h1>Premium Clothing</h1>
+            <p>Discover curated fashion for every occasion and style</p>
+        </div>
+    </section>
+    
+    <!-- Dynamic Horizontal Filter System -->
+    <div class="filters-container">
+        <!-- Mobile Toggle -->
+        <button class="filter-toggle" id="filterToggle">
+            <i class="fas fa-filter"></i> Filter & Sort
+            <span class="filter-count-badge" id="mobileFilterCount">3</span>
+        </button>
+        
+        <!-- Main Filter Bar -->
+        <div class="filters-bar" id="filtersBar">
+            <!-- Categories -->
+            <div class="filter-section" id="categoryFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <h3>For</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content">
+                    <div class="filter-grid">
+                        <div class="filter-option active" data-filter="all">All</div>
+                        <div class="filter-option" data-filter="men">Men</div>
+                        <div class="filter-option" data-filter="women">Women</div>
+                        <div class="filter-option" data-filter="kids">Kids</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Type -->
+            <div class="filter-section" id="typeFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <h3>Type</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content">
+                    <div class="filter-grid">
+                        <div class="filter-option active" data-type="all">All</div>
+                        <div class="filter-option" data-type="shirts">Shirts</div>
+                        <div class="filter-option" data-type="pants">Pants</div>
+                        <div class="filter-option" data-type="jackets">Jackets</div>
+                        <div class="filter-option" data-type="dresses">Dresses</div>
+                        <div class="filter-option" data-type="accessories">Accessories</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Size -->
+            <div class="filter-section" id="sizeFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-ruler"></i>
+                    </div>
+                    <h3>Size</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content">
+                    <div class="size-options">
+                        <div class="size-option active" data-size="all">All</div>
+                        <div class="size-option" data-size="XS">XS</div>
+                        <div class="size-option" data-size="S">S</div>
+                        <div class="size-option" data-size="M">M</div>
+                        <div class="size-option" data-size="L">L</div>
+                        <div class="size-option" data-size="XL">XL</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Price Range -->
+            <div class="filter-section" id="priceFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Price</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content price-range-content">
+                    <div class="price-display">
+                        <div>
+                            <div class="price-label">MAX PRICE</div>
+                            <div class="price-value">$<span id="currentPrice">300</span></div>
+                        </div>
+                        <i class="fas fa-tag" style="color: #ff4757; font-size: 2rem;"></i>
+                    </div>
+                    <input type="range" class="price-slider" id="priceSlider" min="10" max="300" value="300" step="10">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                        <span>$10</span>
+                        <span>$300</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sort -->
+            <div class="filter-section" id="sortFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-sort-amount-down"></i>
+                    </div>
+                    <h3>Sort By</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content">
+                    <div class="filter-grid">
+                        <div class="filter-option active" data-sort="newest">Newest</div>
+                        <div class="filter-option" data-sort="popular">Popular</div>
+                        <div class="filter-option" data-sort="price-low">Price: Low</div>
+                        <div class="filter-option" data-sort="price-high">Price: High</div>
+                        <div class="filter-option" data-sort="rating">Top Rated</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Apply Button -->
+            <div class="filter-section apply-section">
+                <button class="apply-btn" id="applyFilters">
+                    <i class="fas fa-check-circle"></i>
+                    Apply Filters
+                    <span class="filter-count-badge" id="applyFilterCount">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Active Filters Bar -->
+        <div class="active-filters-bar" id="activeFilters">
+            <div class="filter-count">
+                <div class="filter-count-badge" id="filterCount">3</div>
+                <span>Active Filters:</span>
+            </div>
+            <div class="filter-tags" id="filterTags">
+                <div class="filter-tag">
+                    All Clothing
+                    <span class="tag-remove" data-filter-type="category">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="filter-tag">
+                    Max: $300
+                    <span class="tag-remove" data-filter-type="price">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="filter-tag">
+                    Sort: Newest
+                    <span class="tag-remove" data-filter-type="sort">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+            </div>
+            <button class="clear-all-btn" id="clearAllBtn">
+                <i class="fas fa-trash-alt"></i>
+                Clear All
+            </button>
+        </div>
+        
+        <!-- Filter Status -->
+        <div class="filter-status" id="filterStatus">
+            <div>
+                Showing <span class="results-count" id="resultsCount">24</span> clothing items
+            </div>
+            <div id="filterSummary">
+                All Clothing • Max: $300 • Newest
+            </div>
+        </div>
+    </div>
+    
+    <!-- Products Grid -->
+    <div class="shop-grid" id="clothes-grid">
+        <!-- Products will be loaded by JavaScript -->
+        <div class="loading">
+            <div class="loader"></div>
+            <p>Loading premium clothing...</p>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="logo">fripe<span>.</span>tn</div>
+            
+            <div class="footer-links">
+                <a href="../index.html">Home</a>
+                <a href="perfumes.html">Perfumes</a>
+                <a href="clothes.html">Clothes</a>
+                <a href="shoes.html">Shoes</a>
+                <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2025 Yahya Hcini — Designed & Developed by Yahya.
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cart -->
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <div class="cart-title">Your Cart</div>
+            <button class="close-cart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-body">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-bag"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                Total: <span class="amount">$0.00</span>
+            </div>
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+    
+    <div class="cart-overlay"></div>
+    
+    <!-- JavaScript -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/shop.js"></script>
+    <script src="../assets/js/products.js"></script>
+    
+    <script>
+        // Enhanced Filter System for Clothes
+        class ClothesFilterSystem {
+            constructor() {
+                this.filters = {
+                    category: 'all',
+                    type: 'all',
+                    size: 'all',
+                    maxPrice: 300,
+                    sort: 'newest'
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.updateUI();
+            }
+            
+            setupEventListeners() {
+                // Mobile toggle
+                const filterToggle = document.getElementById('filterToggle');
+                const filtersBar = document.getElementById('filtersBar');
+                
+                if (filterToggle && filtersBar) {
+                    filterToggle.addEventListener('click', () => {
+                        filtersBar.classList.toggle('active');
+                        filterToggle.innerHTML = filtersBar.classList.contains('active') 
+                            ? '<i class="fas fa-times"></i> Close Filters' 
+                            : '<i class="fas fa-filter"></i> Filter & Sort';
+                    });
+                }
+                
+                // Event delegation for all filter clicks
+                document.addEventListener('click', (e) => {
+                    // Handle filter-option clicks
+                    if (e.target.closest('.filter-option')) {
+                        const option = e.target.closest('.filter-option');
+                        const section = option.closest('.filter-section');
+                        
+                        // Remove active class from siblings in the same section
+                        const options = section.querySelectorAll('.filter-option');
+                        options.forEach(opt => {
+                            opt.classList.remove('active');
+                        });
+                        
+                        // Add active class to clicked option
+                        option.classList.add('active');
+                        
+                        // Update filters based on data attribute
+                        if (option.dataset.filter) {
+                            this.filters.category = option.dataset.filter;
+                        } else if (option.dataset.type) {
+                            this.filters.type = option.dataset.type;
+                        } else if (option.dataset.sort) {
+                            this.filters.sort = option.dataset.sort;
+                        }
+                        
+                        this.updateUI();
+                    }
+                    
+                    // Handle size-option clicks
+                    if (e.target.closest('.size-option')) {
+                        const option = e.target.closest('.size-option');
+                        const section = option.closest('.filter-section');
+                        
+                        // Remove active class from siblings
+                        const options = section.querySelectorAll('.size-option');
+                        options.forEach(opt => {
+                            opt.classList.remove('active');
+                        });
+                        
+                        // Add active class to clicked
+                        option.classList.add('active');
+                        
+                        // Update size filter
+                        this.filters.size = option.dataset.size;
+                        
+                        this.updateUI();
+                    }
+                });
+                
+                // Price slider
+                const priceSlider = document.getElementById('priceSlider');
+                if (priceSlider) {
+                    priceSlider.addEventListener('input', (e) => {
+                        this.filters.maxPrice = parseInt(e.target.value);
+                        document.getElementById('currentPrice').textContent = e.target.value;
+                        this.updateUI();
+                    });
+                }
+                
+                // Apply button
+                const applyBtn = document.getElementById('applyFilters');
+                if (applyBtn) {
+                    applyBtn.addEventListener('click', () => {
+                        this.applyFilters();
+                    });
+                }
+                
+                // Clear all button
+                const clearAllBtn = document.getElementById('clearAllBtn');
+                if (clearAllBtn) {
+                    clearAllBtn.addEventListener('click', () => {
+                        this.clearAllFilters();
+                    });
+                }
+                
+                // Filter section headers (for mobile)
+                document.querySelectorAll('.filter-header').forEach(header => {
+                    header.addEventListener('click', (e) => {
+                        if (window.innerWidth <= 768) {
+                            const section = e.target.closest('.filter-section');
+                            section.classList.toggle('active');
+                        }
+                    });
+                });
+            }
+            
+            updateUI() {
+                // Update filter count
+                const filterCount = this.getActiveFilterCount();
+                document.getElementById('filterCount').textContent = filterCount;
+                document.getElementById('applyFilterCount').textContent = filterCount;
+                document.getElementById('mobileFilterCount').textContent = filterCount;
+                
+                // Update active filters bar
+                this.updateActiveFilters();
+                
+                // Update apply button
+                const applyBtn = document.getElementById('applyFilters');
+                if (applyBtn) {
+                    applyBtn.disabled = filterCount === 0;
+                    applyBtn.style.opacity = filterCount === 0 ? '0.7' : '1';
+                }
+                
+                // Update filter status
+                this.updateFilterStatus();
+                
+                // Update product count
+                this.updateProductCount();
+            }
+            
+            getActiveFilterCount() {
+                let count = 0;
+                if (this.filters.category && this.filters.category !== 'all') count++;
+                if (this.filters.type && this.filters.type !== 'all') count++;
+                if (this.filters.size && this.filters.size !== 'all') count++;
+                if (this.filters.maxPrice < 300) count++;
+                if (this.filters.sort && this.filters.sort !== 'newest') count++;
+                return Math.max(1, count);
+            }
+            
+            updateActiveFilters() {
+                const container = document.getElementById('filterTags');
+                if (!container) return;
+                
+                let html = '';
+                
+                // Category
+                if (this.filters.category === 'all') {
+                    html += `
+                        <div class="filter-tag">
+                            All Clothing
+                            <span class="tag-remove" data-filter-type="category">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="filter-tag">
+                            ${this.filters.category.charAt(0).toUpperCase() + this.filters.category.slice(1)}
+                            <span class="tag-remove" data-filter-type="category">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
+                    `;
+                }
+                
+                // Type
+                if (this.filters.type && this.filters.type !== 'all') {
+                    html += `
+                        <div class="filter-tag">
+                            ${this.filters.type.charAt(0).toUpperCase() + this.filters.type.slice(1)}
+                            <span class="tag-remove" data-filter-type="type">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
+                    `;
+                }
+                
+                // Size
+                if (this.filters.size && this.filters.size !== 'all') {
+                    html += `
+                        <div class="filter-tag">
+                            Size: ${this.filters.size}
+                            <span class="tag-remove" data-filter-type="size">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
+                    `;
+                }
+                
+                // Price
+                html += `
+                    <div class="filter-tag">
+                        Max: $${this.filters.maxPrice}
+                        <span class="tag-remove" data-filter-type="price">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `;
+                
+                // Sort
+                let sortText = '';
+                switch(this.filters.sort) {
+                    case 'newest': sortText = 'Newest'; break;
+                    case 'price-low': sortText = 'Price: Low'; break;
+                    case 'price-high': sortText = 'Price: High'; break;
+                    case 'popular': sortText = 'Popular'; break;
+                    case 'rating': sortText = 'Top Rated'; break;
+                }
+                html += `
+                    <div class="filter-tag">
+                        Sort: ${sortText}
+                        <span class="tag-remove" data-filter-type="sort">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+                
+                // Add event listeners to remove buttons
+                container.querySelectorAll('.tag-remove').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const filterType = button.getAttribute('data-filter-type');
+                        this.removeFilter(filterType);
+                    });
+                });
+                
+                // Update active filters bar style
+                const activeBar = document.getElementById('activeFilters');
+                if (activeBar) {
+                    if (this.getActiveFilterCount() > 1) {
+                        activeBar.classList.add('expanded');
+                    } else {
+                        activeBar.classList.remove('expanded');
+                    }
+                }
+            }
+            
+            updateFilterStatus() {
+                const statusElement = document.getElementById('filterSummary');
+                if (!statusElement) return;
+                
+                let summary = [];
+                
+                // Category
+                if (this.filters.category === 'all') {
+                    summary.push('All Clothing');
+                } else {
+                    summary.push(this.filters.category.charAt(0).toUpperCase() + this.filters.category.slice(1));
+                }
+                
+                // Type
+                if (this.filters.type && this.filters.type !== 'all') {
+                    summary.push(this.filters.type.charAt(0).toUpperCase() + this.filters.type.slice(1));
+                }
+                
+                // Size
+                if (this.filters.size && this.filters.size !== 'all') {
+                    summary.push(`Size ${this.filters.size}`);
+                }
+                
+                // Price
+                summary.push(`Max: $${this.filters.maxPrice}`);
+                
+                // Sort
+                let sortText = '';
+                switch(this.filters.sort) {
+                    case 'newest': sortText = 'Newest'; break;
+                    case 'price-low': sortText = 'Price: Low'; break;
+                    case 'price-high': sortText = 'Price: High'; break;
+                    case 'popular': sortText = 'Popular'; break;
+                    case 'rating': sortText = 'Top Rated'; break;
+                }
+                summary.push(sortText);
+                
+                // Update the display
+                statusElement.textContent = summary.join(' • ');
+            }
+            
+            removeFilter(type) {
+                switch(type) {
+                    case 'category':
+                        this.filters.category = 'all';
+                        this.resetFilterOptions('categoryFilter', 'all');
+                        break;
+                    case 'type':
+                        this.filters.type = 'all';
+                        this.resetFilterOptions('typeFilter', 'all');
+                        break;
+                    case 'size':
+                        this.filters.size = 'all';
+                        this.resetSizeOptions();
+                        break;
+                    case 'price':
+                        this.filters.maxPrice = 300;
+                        const priceSlider = document.getElementById('priceSlider');
+                        if (priceSlider) {
+                            priceSlider.value = 300;
+                            document.getElementById('currentPrice').textContent = '300';
+                        }
+                        break;
+                    case 'sort':
+                        this.filters.sort = 'newest';
+                        this.resetFilterOptions('sortFilter', 'newest');
+                        break;
+                }
+                
+                this.updateUI();
+                this.applyFilters();
+            }
+            
+            resetFilterOptions(filterId, activeValue = null) {
+                const section = document.getElementById(filterId);
+                if (!section) return;
+                
+                const options = section.querySelectorAll('.filter-option');
+                options.forEach(option => {
+                    option.classList.remove('active');
+                    
+                    if (activeValue) {
+                        if (option.dataset.filter === activeValue || 
+                            option.dataset.type === activeValue ||
+                            option.dataset.sort === activeValue) {
+                            option.classList.add('active');
+                        }
+                    }
+                });
+            }
+            
+            resetSizeOptions() {
+                const section = document.getElementById('sizeFilter');
+                if (!section) return;
+                
+                const options = section.querySelectorAll('.size-option');
+                options.forEach(option => {
+                    option.classList.remove('active');
+                    if (option.dataset.size === 'all') {
+                        option.classList.add('active');
+                    }
+                });
+            }
+            
+            clearAllFilters() {
+                this.filters = {
+                    category: 'all',
+                    type: 'all',
+                    size: 'all',
+                    maxPrice: 300,
+                    sort: 'newest'
+                };
+                
+                // Reset UI
+                this.resetFilterOptions('categoryFilter', 'all');
+                this.resetFilterOptions('typeFilter', 'all');
+                this.resetFilterOptions('sortFilter', 'newest');
+                this.resetSizeOptions();
+                
+                const priceSlider = document.getElementById('priceSlider');
+                if (priceSlider) {
+                    priceSlider.value = 300;
+                    document.getElementById('currentPrice').textContent = '300';
+                }
+                
+                this.updateUI();
+                this.applyFilters();
+            }
+            
+            applyFilters() {
+                console.log('Applying clothes filters:', this.filters);
+                
+                // Show loading state
+                const loading = document.querySelector('.loading');
+                if (loading) {
+                    loading.style.display = 'flex';
+                    
+                    // Simulate API call
+                    setTimeout(() => {
+                        loading.style.display = 'none';
+                    }, 800);
+                }
+                
+                // Visual feedback on apply button
+                const applyBtn = document.getElementById('applyFilters');
+                if (applyBtn) {
+                    const originalHTML = applyBtn.innerHTML;
+                    applyBtn.innerHTML = '<i class="fas fa-check"></i> Applied!';
+                    applyBtn.style.background = 'linear-gradient(135deg, #05c46b, #00b894)';
+                    
+                    setTimeout(() => {
+                        applyBtn.innerHTML = originalHTML;
+                        applyBtn.style.background = 'linear-gradient(135deg, #ff4757, #ff6b81)';
+                    }, 1500);
+                }
+            }
+            
+            updateProductCount() {
+                // This would normally come from your API
+                let baseCount = 24;
+                
+                if (this.filters.category !== 'all') baseCount = 16;
+                if (this.filters.type !== 'all') baseCount = 12;
+                if (this.filters.size !== 'all') baseCount = 8;
+                if (this.filters.maxPrice < 150) baseCount = 6;
+                
+                document.getElementById('resultsCount').textContent = baseCount;
+                return baseCount;
+            }
+        }
+        
+        // Initialize filter system
+        let clothesFilterSystem;
+        document.addEventListener('DOMContentLoaded', () => {
+            clothesFilterSystem = new ClothesFilterSystem();
+            
+            // Improved dropdown hover behavior
+            setTimeout(() => {
+                document.querySelectorAll('.filter-section').forEach(section => {
+                    let hideTimeout;
+                    
+                    section.addEventListener('mouseenter', () => {
+                        clearTimeout(hideTimeout);
+                        section.classList.add('active');
+                    });
+                    
+                    section.addEventListener('mouseleave', (e) => {
+                        // Check if mouse is moving to dropdown
+                        const relatedTarget = e.relatedTarget;
+                        const dropdown = section.querySelector('.filter-content');
+                        
+                        // If moving to dropdown or its children, don't hide
+                        if (relatedTarget && dropdown && 
+                            (dropdown.contains(relatedTarget) || 
+                             relatedTarget === dropdown)) {
+                            return; // Don't hide, mouse moved to dropdown
+                        }
+                        
+                        hideTimeout = setTimeout(() => {
+                            section.classList.remove('active');
+                        }, 150); // 150ms delay before hiding
+                    });
+                    
+                    // Also handle dropdown hover
+                    const content = section.querySelector('.filter-content');
+                    if (content) {
+                        content.addEventListener('mouseenter', () => {
+                            clearTimeout(hideTimeout);
+                            section.classList.add('active');
+                        });
+                        
+                        content.addEventListener('mouseleave', () => {
+                            hideTimeout = setTimeout(() => {
+                                section.classList.remove('active');
+                            }, 100);
+                        });
+                    }
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>

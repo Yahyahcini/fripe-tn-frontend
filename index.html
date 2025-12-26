@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fripe.tn - Premium Fashion Store</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Croissant+One&family=Madimi+One&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/cart.css">
+    
+    <style>
+        /* Homepage Styles */
+        body {
+            padding-top: 80px; /* For fixed header */
+        }
+        
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('assets/images/categories/clothes.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-family: 'Croissant One', serif;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        /* ==== PREMIUM BRANDS MARQUEE SECTION ==== */
+        .brands-section {
+            padding: 60px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            padding-bottom: 120px;
+        }
+        
+        .brands-section::before,
+        .brands-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 100px;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .brands-section::before {
+            left: 0;
+            background: linear-gradient(to right, #0f0f0f, transparent);
+        }
+        
+        .brands-section::after {
+            right: 0;
+            background: linear-gradient(to left, #0f0f0f, transparent);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: white;
+            font-family: 'Croissant One', serif;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 50px;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+        }
+        
+        .brands-marquee {
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            padding: 20px 0;
+            width: 100%;
+        }
+        
+        .brands-track {
+            display: flex;
+            animation: scroll 40s linear infinite;
+            gap: 60px;
+            padding: 0 30px;
+        }
+        
+        .brands-track:hover {
+            animation-play-state: paused;
+        }
+        
+        .brand-card {
+            flex: 0 0 auto;
+            width: 180px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .brand-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 71, 87, 0.3);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .brand-logo {
+            max-width: 100%;
+            max-height: 60px;
+            filter: brightness(0) invert(1);
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .brand-card:hover .brand-logo {
+            opacity: 1;
+            filter: brightness(0) invert(1) drop-shadow(0 0 10px rgba(255, 71, 87, 0.5));
+        }
+        
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(-180px * 6 - 60px * 6));
+            }
+        }
+        
+        /* Double the brands for seamless loop */
+        .brands-track {
+            width: calc((180px * 12) + (60px * 12));
+        }
+        
+        /* Categories */
+        .categories {
+            padding: 80px 20px;
+            background: #1a1a1a;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 40px auto 0;
+        }
+        
+        .category-card {
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .category-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        .category-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 30px;
+            color: white;
+        }
+        
+        .category-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .products-section {
+            padding: 80px 20px;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 40px auto 0;
+        }
+        
+        .product-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .product-price {
+            color: #ff4757;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.3);
+        }
+        
+        /* Loading animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .brand-card {
+                width: 140px;
+                height: 100px;
+                padding: 20px;
+            }
+            
+            .brand-logo {
+                max-height: 50px;
+            }
+            
+            .brands-section::before,
+            .brands-section::after {
+                width: 50px;
+            }
+            
+            @keyframes scroll {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(calc(-140px * 6 - 60px * 6));
+                }
+            }
+            
+            .brands-track {
+                width: calc((140px * 12) + (60px * 12));
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <a href="index.html" class="logo">fripe<span>.</span>tn</a>
+        
+        <nav class="main-nav">
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li class="dropdown">
+                    <a href="#">Shop <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="shop/perfumes.html">Perfumes</a>
+                        <a href="shop/clothes.html">Clothes</a>
+                        <a href="shop/shoes.html">Shoes</a>
+                    </div>
+                </li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-actions">
+            <button class="cart-btn">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+            </button>
+            <button class="theme-btn">
+                <i class="fas fa-sun"></i>
+            </button>
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Premium Fashion Store</h1>
+            <p>Discover exclusive collections of perfumes, clothes, and shoes curated for the modern individual.</p>
+            <a href="#brands" class="btn">Discover Brands</a>
+        </div>
+    </section>
+    
+    <!-- Premium Brands Marquee -->
+    <section class="brands-section" id="brands">
+        <h2 class="section-title">Premium Fashion Brands</h2>
+        <p class="section-subtitle">Trusted by fashion enthusiasts worldwide. We partner with the most prestigious brands to bring you exceptional quality.</p>
+        
+        <div class="brands-marquee">
+            <div class="brands-track">
+                <!-- REAL FASHION BRANDS ONLY (Clothes, Shoes, Perfumes) -->
+                <!-- Sportswear & Casual -->
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/800px-Logo_NIKE.svg.png" alt="Nike" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/800px-Adidas_Logo.svg.png" alt="Adidas" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Puma_Logo.svg/800px-Puma_Logo.svg.png" alt="Puma" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Reebok_2019_logo.svg/800px-Reebok_2019_logo.svg.png" alt="Reebok" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Zara_Logo.svg/800px-Zara_Logo.svg.png" alt="Zara" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/H%26M-Logo.svg/800px-H%26M-Logo.svg.png" alt="H&M" class="brand-logo">
+                </div>
+                
+                <!-- Luxury Fashion -->
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Gucci_Logo.svg/800px-Gucci_Logo.svg.png" alt="Gucci" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Louis_Vuitton_logo_and_wordmark.svg/800px-Louis_Vuitton_logo_and_wordmark.svg.png" alt="Louis Vuitton" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Chanel_logo.png/800px-Chanel_logo.png" alt="Chanel" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Prada-Logo.svg/800px-Prada-Logo.svg.png" alt="Prada" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Versace_Logo.svg/800px-Versace_Logo.svg.png" alt="Versace" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Dior_Logo.svg/800px-Dior_Logo.svg.png" alt="Dior" class="brand-logo">
+                </div>
+                
+                <!-- DUPLICATED FOR SEAMLESS LOOP -->
+                <!-- Sportswear & Casual -->
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/800px-Logo_NIKE.svg.png" alt="Nike" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/800px-Adidas_Logo.svg.png" alt="Adidas" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Puma_Logo.svg/800px-Puma_Logo.svg.png" alt="Puma" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Reebok_2019_logo.svg/800px-Reebok_2019_logo.svg.png" alt="Reebok" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Zara_Logo.svg/800px-Zara_Logo.svg.png" alt="Zara" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/H%26M-Logo.svg/800px-H%26M-Logo.svg.png" alt="H&M" class="brand-logo">
+                </div>
+                
+                <!-- Luxury Fashion -->
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Gucci_Logo.svg/800px-Gucci_Logo.svg.png" alt="Gucci" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Louis_Vuitton_logo_and_wordmark.svg/800px-Louis_Vuitton_logo_and_wordmark.svg.png" alt="Louis Vuitton" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Chanel_logo.png/800px-Chanel_logo.png" alt="Chanel" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Prada-Logo.svg/800px-Prada-Logo.svg.png" alt="Prada" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Versace_Logo.svg/800px-Versace_Logo.svg.png" alt="Versace" class="brand-logo">
+                </div>
+                <div class="brand-card">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Dior_Logo.svg/800px-Dior_Logo.svg.png" alt="Dior" class="brand-logo">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Categories -->
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">Shop By Category</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <img src="assets/images/categories/parfums.jpg" alt="Perfumes">
+                    <div class="category-content">
+                        <h3>Perfumes</h3>
+                        <p>Signature scents that define elegance</p>
+                        <a href="shop/perfumes.html" class="btn">Explore</a>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="assets/images/categories/clothes.jpg" alt="Clothes">
+                    <div class="category-content">
+                        <h3>Clothing</h3>
+                        <p>Curated fashion for every occasion</p>
+                        <a href="shop/clothes.html" class="btn">Explore</a>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="assets/images/categories/shoes.jpg" alt="Shoes">
+                    <div class="category-content">
+                        <h3>Shoes</h3>
+                        <p>Step in style with premium footwear</p>
+                        <a href="shop/shoes.html" class="btn">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Products -->
+    <section class="products-section" id="products">
+        <div class="container">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="products-grid" id="products-grid">
+                <!-- Products will be loaded by products.js -->
+                <div class="loading" style="grid-column: 1 / -1; text-align: center; padding: 60px; color: rgba(255, 255, 255, 0.7);">
+                    <div class="loader" style="width: 60px; height: 60px; border: 5px solid rgba(255, 255, 255, 0.1); border-top-color: #ff4757; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 25px;"></div>
+                    <p style="font-size: 1.1rem; margin-bottom: 15px;">Loading products...</p>
+                    <p style="font-size: 0.9rem; opacity: 0.6;">Please wait while we fetch the latest products</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="logo">fripe<span>.</span>tn</div>
+            
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="shop/perfumes.html">Perfumes</a>
+                <a href="shop/clothes.html">Clothes</a>
+                <a href="shop/shoes.html">Shoes</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2025 Yahya Hcini — Designed & Developed by Yahya.
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cart -->
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <div class="cart-title">Your Cart</div>
+            <button class="close-cart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-body">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-bag"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                Total: <span class="amount">$0.00</span>
+            </div>
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+    
+    <div class="cart-overlay"></div>
+    
+    <!-- JavaScript -->
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/products.js"></script>
+    
+    <script>
+        // Add interactive features for brands section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pause animation on hover
+            const brandsTrack = document.querySelector('.brands-track');
+            const brandsMarquee = document.querySelector('.brands-marquee');
+            
+            if (brandsMarquee) {
+                brandsMarquee.addEventListener('mouseenter', () => {
+                    brandsTrack.style.animationPlayState = 'paused';
+                });
+                
+                brandsMarquee.addEventListener('mouseleave', () => {
+                    brandsTrack.style.animationPlayState = 'running';
+                });
+            }
+            
+            // DO NOT clear the loading state here
+            // products.js will handle loading and clearing
+        });
+        
+        // This function is kept for compatibility but doesn't clear loading
+        function loadFeaturedProducts() {
+            // This function doesn't do anything now
+            // products.js will handle the product loading
+            console.log('Products will be loaded by products.js');
+            
+            // Optional: Update loading message
+            const loadingDiv = document.querySelector('.loading');
+            if (loadingDiv) {
+                const message = loadingDiv.querySelector('p');
+                if (message) {
+                    message.textContent = 'Loading products from Strapi...';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfumes - fripe.tn</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Croissant+One&family=Madimi+One&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/header.css">
+    <link rel="stylesheet" href="../assets/css/cart.css">
+    <link rel="stylesheet" href="../assets/css/shop.css">
+    
+    <style>
+        /* Perfumes specific */
+        .shop-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.176), rgba(0, 0, 0, 0.158)), 
+                        url('../assets/images/background/perfume1.jpg');
+            background-position: center;
+        }
+        
+        /* DYNAMIC HORIZONTAL FILTER SYSTEM */
+        .filters-container {
+            max-width: 1400px;
+            margin: 40px auto 30px;
+            padding: 0 20px;
+        }
+        
+        /* Main Filter Bar - FIXED CONTAINER */
+        .filters-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 71, 87, 0.05));
+            border-radius: 20px;
+            padding: 25px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        /* Filter Toggle for Mobile */
+        .filter-toggle {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.3);
+        }
+        
+        /* Filter Section - FIXED CONTAINMENT */
+        .filter-section {
+            position: relative;
+            min-height: 100px;
+        }
+        
+        .filter-section.apply-section {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .filter-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-header:hover {
+            border-bottom-color: rgba(255, 71, 87, 0.5);
+        }
+        
+        .filter-header h3 {
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 71, 87, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff4757;
+            font-size: 0.9rem;
+        }
+        
+        /* ==== FIX 1: Dropdown Content with HOVER SAFE ZONE ==== */
+        .filter-content {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: rgba(25, 25, 35, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            min-width: 280px;
+            max-height: 400px;
+            overflow-y: auto;
+            /* HOVER SAFE ZONE - FIXES DROPDOWN HIDING */
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+        
+        /* Hover safe zone extension */
+        .filter-content::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: transparent;
+        }
+        
+        /* ==== FIX 2: Volume dropdown specific width ==== */
+        .filter-section#volumeFilter .filter-content {
+            min-width: 300px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+        }
+        
+        .filter-section#volumeFilter:hover .filter-content,
+        .filter-section#volumeFilter.active .filter-content {
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        /* ==== FIX 3: Price dropdown specific width ==== */
+        .filter-section#priceFilter .filter-content {
+            min-width: 320px;
+        }
+        
+        /* Make sure right-side dropdowns don't go off screen */
+        .filter-section:nth-child(4) .filter-content,
+        .filter-section:nth-child(5) .filter-content {
+            left: auto;
+            right: 0;
+        }
+        
+        .filter-section:hover .filter-content,
+        .filter-section.active .filter-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        /* ==== FIX 4: Right-side dropdowns for price and sort ==== */
+        .filter-section:nth-child(4):hover .filter-content,
+        .filter-section:nth-child(4).active .filter-content,
+        .filter-section:nth-child(5):hover .filter-content,
+        .filter-section:nth-child(5).active .filter-content {
+            transform: translateY(0);
+        }
+        
+        /* Filter Buttons Grid */
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+        
+        .filter-option {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .filter-option:hover {
+            background: rgba(255, 71, 87, 0.15);
+            border-color: rgba(255, 71, 87, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .filter-option.active {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            border-color: #ff4757;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
+        }
+        
+        /* Price Range Styling */
+        .price-range-content {
+            padding: 15px;
+        }
+        
+        .price-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .price-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff4757;
+            text-shadow: 0 2px 10px rgba(255, 71, 87, 0.3);
+        }
+        
+        .price-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .price-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            margin: 20px 0;
+        }
+        
+        .price-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #ff4757;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .price-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(255, 71, 87, 1);
+        }
+        
+        /* Apply Button - FIXED POSITION */
+        .apply-btn {
+            padding: 14px 40px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .apply-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .apply-btn:hover::before {
+            left: 100%;
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 71, 87, 0.6);
+        }
+        
+        /* Active Filters Bar */
+        .active-filters-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 25px;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 60px;
+            transition: all 0.3s ease;
+        }
+        
+        .active-filters-bar.expanded {
+            background: rgba(255, 71, 87, 0.05);
+            border-color: rgba(255, 71, 87, 0.2);
+        }
+        
+        .filter-count {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ff4757;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .filter-count-badge {
+            background: #ff4757;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex: 1;
+        }
+        
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.2);
+            border-radius: 25px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .filter-tag:hover {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: rgba(255, 71, 87, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .tag-remove {
+            color: #ff4757;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tag-remove:hover {
+            background: #ff4757;
+            color: white;
+            transform: rotate(90deg);
+        }
+        
+        .clear-all-btn {
+            margin-left: auto;
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .clear-all-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 71, 87, 0.4);
+            color: #ff4757;
+        }
+        
+        /* Filter Status */
+        .filter-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: rgba(255, 71, 87, 0.05);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .results-count {
+            font-weight: 600;
+            color: #ff4757;
+        }
+        
+        /* Additional Perfume-specific Filters */
+        /* ==== FIX 5: Better fragrance grid layout ==== */
+        .filter-grid.fragrance-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .filter-option.fragrance-option {
+            flex-direction: column;
+            padding: 12px 8px;
+            min-height: 70px;
+        }
+        
+        .fragrance-icon {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        /* ==== FIX 6: Volume Filter better layout ==== */
+        .volume-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        
+        .volume-option {
+            padding: 15px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+        
+        .volume-option:hover {
+            background: rgba(255, 71, 87, 0.15);
+            border-color: rgba(255, 71, 87, 0.3);
+        }
+        
+        .volume-option.active {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            border-color: #ff4757;
+            color: white;
+        }
+        
+        .volume-size {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .volume-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        /* ==== FIX 7: Consistent dropdown widths ==== */
+        .filter-section:not(#priceFilter):not(#volumeFilter) .filter-content {
+            min-width: 220px;
+            max-width: 280px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .filters-bar {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .filter-section.apply-section {
+                grid-column: 1 / -1;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .filters-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .filters-container {
+                padding: 0 15px;
+            }
+            
+            .filter-toggle {
+                display: flex;
+            }
+            
+            .filters-bar {
+                display: none;
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .filters-bar.active {
+                display: grid;
+            }
+            
+            /* ==== FIX 8: Mobile dropdown fixes ==== */
+            .filter-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                margin-top: 10px;
+                display: none;
+                box-shadow: none;
+                background: rgba(255, 255, 255, 0.03);
+                min-width: 100% !important;
+                max-width: 100% !important;
+                left: 0 !important;
+                transform: none !important;
+            }
+            
+            .filter-section#volumeFilter .filter-content,
+            .filter-section#priceFilter .filter-content {
+                left: 0;
+                transform: none;
+            }
+            
+            .filter-section.active .filter-content {
+                display: block;
+            }
+            
+            .filter-section:hover .filter-content,
+            .filter-section.active .filter-content {
+                transform: none;
+            }
+            
+            .active-filters-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .filter-tags {
+                justify-content: center;
+            }
+            
+            .clear-all-btn {
+                margin-left: 0;
+                align-self: center;
+            }
+            
+            .filter-grid.fragrance-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .volume-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <a href="../index.html" class="logo">fripe<span>.</span>tn</a>
+        
+        <nav class="main-nav">
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="active">Shop <i class="fas fa-chevron-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="perfumes.html" class="active">Perfumes</a>
+                        <a href="clothes.html">Clothes</a>
+                        <a href="shoes.html">Shoes</a>
+                    </div>
+                </li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-actions">
+            <button class="cart-btn">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-count">0</span>
+            </button>
+            <button class="theme-btn">
+                <i class="fas fa-sun"></i>
+            </button>
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Shop Header -->
+    <section class="shop-header">
+        <div class="container">
+            <h1>Premium Perfumes</h1>
+            <p>Discover signature scents that define elegance and personality</p>
+        </div>
+    </section>
+    
+    <!-- Dynamic Horizontal Filter System -->
+    <div class="filters-container">
+        <!-- Mobile Toggle -->
+        <button class="filter-toggle" id="filterToggle">
+            <i class="fas fa-filter"></i> Filter & Sort
+            <span class="filter-count-badge" id="mobileFilterCount">3</span>
+        </button>
+        
+        <!-- Main Filter Bar - USING GRID NOW -->
+        <div class="filters-bar" id="filtersBar">
+            <!-- Categories -->
+            <div class="filter-section" id="categoryFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-venus-mars"></i>
+                    </div>
+                    <h3>For</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content">
+                    <div class="filter-grid">
+                        <div class="filter-option active" data-filter="all">All</div>
+                        <div class="filter-option" data-filter="men">Men</div>
+                        <div class="filter-option" data-filter="women">Women</div>
+                        <div class="filter-option" data-filter="unisex">Unisex</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fragrance Type -->
+            <div class="filter-section" id="fragranceFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <h3>Fragrance</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content">
+                    <div class="filter-grid fragrance-grid">
+                        <div class="filter-option fragrance-option" data-fragrance="woody">
+                            <div class="fragrance-icon">🌲</div>
+                            <div>Woody</div>
+                        </div>
+                        <div class="filter-option fragrance-option" data-fragrance="floral">
+                            <div class="fragrance-icon">🌸</div>
+                            <div>Floral</div>
+                        </div>
+                        <div class="filter-option fragrance-option" data-fragrance="fresh">
+                            <div class="fragrance-icon">🍃</div>
+                            <div>Fresh</div>
+                        </div>
+                        <div class="filter-option fragrance-option" data-fragrance="oriental">
+                            <div class="fragrance-icon">🪔</div>
+                            <div>Oriental</div>
+                        </div>
+                        <div class="filter-option fragrance-option" data-fragrance="citrus">
+                            <div class="fragrance-icon">🍊</div>
+                            <div>Citrus</div>
+                        </div>
+                        <div class="filter-option fragrance-option" data-fragrance="spicy">
+                            <div class="fragrance-icon">🌶️</div>
+                            <div>Spicy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Volume -->
+            <div class="filter-section" id="volumeFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-weight-hanging"></i>
+                    </div>
+                    <h3>Volume</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content">
+                    <div class="volume-options">
+                        <div class="volume-option" data-volume="50">
+                            <div class="volume-size">50ml</div>
+                            <div class="volume-label">Standard</div>
+                        </div>
+                        <div class="volume-option" data-volume="100">
+                            <div class="volume-size">100ml</div>
+                            <div class="volume-label">Popular</div>
+                        </div>
+                        <div class="volume-option" data-volume="150">
+                            <div class="volume-size">150ml</div>
+                            <div class="volume-label">Large</div>
+                        </div>
+                        <div class="volume-option active" data-volume="all">
+                            <div class="volume-size">All</div>
+                            <div class="volume-label">Any Size</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Price Range -->
+            <div class="filter-section" id="priceFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Price</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content price-range-content">
+                    <div class="price-display">
+                        <div>
+                            <div class="price-label">MAX PRICE</div>
+                            <div class="price-value">$<span id="currentPrice">200</span></div>
+                        </div>
+                        <i class="fas fa-tag" style="color: #ff4757; font-size: 2rem;"></i>
+                    </div>
+                    <input type="range" class="price-slider" id="priceSlider" min="20" max="200" value="200" step="10">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; color: rgba(255,255,255,0.6);">
+                        <span>$20</span>
+                        <span>$200</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sort -->
+            <div class="filter-section" id="sortFilter">
+                <div class="filter-header">
+                    <div class="filter-icon">
+                        <i class="fas fa-sort-amount-down"></i>
+                    </div>
+                    <h3>Sort By</h3>
+                    <i class="fas fa-chevron-down" style="margin-left: auto; font-size: 0.8rem; opacity: 0.7;"></i>
+                </div>
+                <div class="filter-content">
+                    <div class="filter-grid">
+                        <div class="filter-option active" data-sort="newest">Newest</div>
+                        <div class="filter-option" data-sort="popular">Popular</div>
+                        <div class="filter-option" data-sort="price-low">Price: Low</div>
+                        <div class="filter-option" data-sort="price-high">Price: High</div>
+                        <div class="filter-option" data-sort="rating">Top Rated</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Apply Button - NOW PROPERLY CONTAINED -->
+            <div class="filter-section apply-section">
+                <button class="apply-btn" id="applyFilters">
+                    <i class="fas fa-check-circle"></i>
+                    Apply Filters
+                    <span class="filter-count-badge" id="applyFilterCount">3</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Active Filters Bar -->
+        <div class="active-filters-bar" id="activeFilters">
+            <div class="filter-count">
+                <div class="filter-count-badge" id="filterCount">3</div>
+                <span>Active Filters:</span>
+            </div>
+            <div class="filter-tags" id="filterTags">
+                <!-- Filters will be dynamically added here -->
+                <div class="filter-tag">
+                    All Perfumes
+                    <span class="tag-remove" data-filter-type="category">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="filter-tag">
+                    Max: $200
+                    <span class="tag-remove" data-filter-type="price">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+                <div class="filter-tag">
+                    Sort: Newest
+                    <span class="tag-remove" data-filter-type="sort">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+            </div>
+            <button class="clear-all-btn" id="clearAllBtn">
+                <i class="fas fa-trash-alt"></i>
+                Clear All
+            </button>
+        </div>
+        
+        <!-- Filter Status -->
+        <div class="filter-status" id="filterStatus">
+            <div>
+                Showing <span class="results-count" id="resultsCount">18</span> perfumes
+            </div>
+            <div id="filterSummary">
+                All Perfumes • Max: $200 • Newest
+            </div>
+        </div>
+    </div>
+    
+    <!-- Products Grid -->
+    <div class="shop-grid" id="perfumes-grid">
+        <!-- Products will be loaded by JavaScript -->
+        <div class="loading">
+            <div class="loader"></div>
+            <p>Loading premium perfumes...</p>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="logo">fripe<span>.</span>tn</div>
+            
+            <div class="footer-links">
+                <a href="../index.html">Home</a>
+                <a href="perfumes.html">Perfumes</a>
+                <a href="clothes.html">Clothes</a>
+                <a href="shoes.html">Shoes</a>
+                <a href="../about.html">About</a>
+                <a href="../contact.html">Contact</a>
+            </div>
+            
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+            
+            <div class="copyright">
+                &copy; 2025 Yahya Hcini — Designed & Developed by Yahya.
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cart -->
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <div class="cart-title">Your Cart</div>
+            <button class="close-cart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-body">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-bag"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                Total: <span class="amount">$0.00</span>
+            </div>
+            <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+    
+    <div class="cart-overlay"></div>
+    
+    <!-- JavaScript -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/shop.js"></script>
+    <script src="../assets/js/products.js"></script>
+    
+    <script>
+    // Enhanced Filter System for Perfumes
+    class PerfumeFilterSystem {
+        constructor() {
+            this.filters = {
+                category: 'all',
+                fragrance: null,
+                volume: 'all',
+                maxPrice: 200,
+                sort: 'newest'
+            };
+            
+            this.init();
+        }
+        
+        init() {
+            this.setupEventListeners();
+            this.updateUI();
+        }
+        
+        setupEventListeners() {
+            // Mobile toggle
+            const filterToggle = document.getElementById('filterToggle');
+            const filtersBar = document.getElementById('filtersBar');
+            
+            if (filterToggle && filtersBar) {
+                filterToggle.addEventListener('click', () => {
+                    filtersBar.classList.toggle('active');
+                    filterToggle.innerHTML = filtersBar.classList.contains('active') 
+                        ? '<i class="fas fa-times"></i> Close Filters' 
+                        : '<i class="fas fa-filter"></i> Filter & Sort';
+                });
+            }
+            
+            // Filter options - FIXED: Use event delegation
+            document.addEventListener('click', (e) => {
+                // Handle filter-option clicks
+                if (e.target.closest('.filter-option')) {
+                    const option = e.target.closest('.filter-option');
+                    const section = option.closest('.filter-section');
+                    const sectionId = section.id;
+                    
+                    // Remove active class from siblings in the same section
+                    const options = section.querySelectorAll('.filter-option');
+                    options.forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked option
+                    option.classList.add('active');
+                    
+                    // Update filters based on data attribute
+                    if (option.dataset.filter) {
+                        this.filters.category = option.dataset.filter;
+                    } else if (option.dataset.fragrance) {
+                        this.filters.fragrance = option.dataset.fragrance;
+                    } else if (option.dataset.sort) {
+                        this.filters.sort = option.dataset.sort;
+                    }
+                    
+                    this.updateUI();
+                }
+                
+                // Handle volume-option clicks - FIXED
+                if (e.target.closest('.volume-option')) {
+                    const option = e.target.closest('.volume-option');
+                    const section = option.closest('.filter-section');
+                    
+                    // Remove active class from siblings
+                    const options = section.querySelectorAll('.volume-option');
+                    options.forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    
+                    // Add active class to clicked
+                    option.classList.add('active');
+                    
+                    // Update volume filter
+                    if (option.dataset.volume === 'all') {
+                        this.filters.volume = 'all';
+                    } else {
+                        this.filters.volume = parseInt(option.dataset.volume);
+                    }
+                    
+                    this.updateUI();
+                }
+            });
+            
+            // Price slider
+            const priceSlider = document.getElementById('priceSlider');
+            if (priceSlider) {
+                priceSlider.addEventListener('input', (e) => {
+                    this.filters.maxPrice = parseInt(e.target.value);
+                    document.getElementById('currentPrice').textContent = e.target.value;
+                    this.updateUI();
+                });
+            }
+            
+            // Apply button
+            const applyBtn = document.getElementById('applyFilters');
+            if (applyBtn) {
+                applyBtn.addEventListener('click', () => {
+                    this.applyFilters();
+                });
+            }
+            
+            // Clear all button
+            const clearAllBtn = document.getElementById('clearAllBtn');
+            if (clearAllBtn) {
+                clearAllBtn.addEventListener('click', () => {
+                    this.clearAllFilters();
+                });
+            }
+            
+            // Filter section headers (for mobile)
+            document.querySelectorAll('.filter-header').forEach(header => {
+                header.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768) {
+                        const section = e.target.closest('.filter-section');
+                        section.classList.toggle('active');
+                    }
+                });
+            });
+        }
+        
+        updateUI() {
+            console.log('Updating UI with filters:', this.filters); // Debug
+            
+            // Update filter count
+            const filterCount = this.getActiveFilterCount();
+            document.getElementById('filterCount').textContent = filterCount;
+            document.getElementById('applyFilterCount').textContent = filterCount;
+            document.getElementById('mobileFilterCount').textContent = filterCount;
+            
+            // Update active filters bar
+            this.updateActiveFilters();
+            
+            // Update apply button
+            const applyBtn = document.getElementById('applyFilters');
+            if (applyBtn) {
+                applyBtn.disabled = filterCount === 0;
+                applyBtn.style.opacity = filterCount === 0 ? '0.7' : '1';
+            }
+            
+            // Update filter status
+            this.updateFilterStatus();
+            
+            // Update product count
+            this.updateProductCount();
+        }
+        
+        getActiveFilterCount() {
+            let count = 0;
+            if (this.filters.category && this.filters.category !== 'all') count++;
+            if (this.filters.fragrance) count++;
+            if (this.filters.volume && this.filters.volume !== 'all') count++;
+            if (this.filters.maxPrice < 200) count++;
+            if (this.filters.sort && this.filters.sort !== 'newest') count++;
+            return Math.max(1, count);
+        }
+        
+        updateActiveFilters() {
+            const container = document.getElementById('filterTags');
+            if (!container) return;
+            
+            let html = '';
+            
+            // Category
+            if (this.filters.category === 'all') {
+                html += `
+                    <div class="filter-tag">
+                        All Perfumes
+                        <span class="tag-remove" data-filter-type="category">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="filter-tag">
+                        ${this.filters.category.charAt(0).toUpperCase() + this.filters.category.slice(1)}
+                        <span class="tag-remove" data-filter-type="category">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `;
+            }
+            
+            // Fragrance
+            if (this.filters.fragrance) {
+                html += `
+                    <div class="filter-tag">
+                        ${this.filters.fragrance.charAt(0).toUpperCase() + this.filters.fragrance.slice(1)}
+                        <span class="tag-remove" data-filter-type="fragrance">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `;
+            }
+            
+            // Volume
+            if (this.filters.volume && this.filters.volume !== 'all') {
+                html += `
+                    <div class="filter-tag">
+                        ${this.filters.volume}ml
+                        <span class="tag-remove" data-filter-type="volume">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `;
+            }
+            
+            // Price
+            html += `
+                <div class="filter-tag">
+                    Max: $${this.filters.maxPrice}
+                    <span class="tag-remove" data-filter-type="price">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+            `;
+            
+            // Sort
+            let sortText = '';
+            switch(this.filters.sort) {
+                case 'newest': sortText = 'Newest'; break;
+                case 'price-low': sortText = 'Price: Low'; break;
+                case 'price-high': sortText = 'Price: High'; break;
+                case 'popular': sortText = 'Popular'; break;
+                case 'rating': sortText = 'Top Rated'; break;
+            }
+            html += `
+                <div class="filter-tag">
+                    Sort: ${sortText}
+                    <span class="tag-remove" data-filter-type="sort">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            
+            // Add event listeners to remove buttons - FIXED
+            container.querySelectorAll('.tag-remove').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const filterType = button.getAttribute('data-filter-type');
+                    this.removeFilter(filterType);
+                });
+            });
+            
+            // Update active filters bar style
+            const activeBar = document.getElementById('activeFilters');
+            if (activeBar) {
+                if (this.getActiveFilterCount() > 1) {
+                    activeBar.classList.add('expanded');
+                } else {
+                    activeBar.classList.remove('expanded');
+                }
+            }
+        }
+        
+        updateFilterStatus() {
+            const statusElement = document.getElementById('filterSummary');
+            if (!statusElement) return;
+            
+            let summary = [];
+            
+            // Category
+            if (this.filters.category === 'all') {
+                summary.push('All Perfumes');
+            } else {
+                summary.push(this.filters.category.charAt(0).toUpperCase() + this.filters.category.slice(1));
+            }
+            
+            // Fragrance
+            if (this.filters.fragrance) {
+                summary.push(this.filters.fragrance.charAt(0).toUpperCase() + this.filters.fragrance.slice(1));
+            }
+            
+            // Volume
+            if (this.filters.volume && this.filters.volume !== 'all') {
+                summary.push(`${this.filters.volume}ml`);
+            }
+            
+            // Price
+            summary.push(`Max: $${this.filters.maxPrice}`);
+            
+            // Sort
+            let sortText = '';
+            switch(this.filters.sort) {
+                case 'newest': sortText = 'Newest'; break;
+                case 'price-low': sortText = 'Price: Low'; break;
+                case 'price-high': sortText = 'Price: High'; break;
+                case 'popular': sortText = 'Popular'; break;
+                case 'rating': sortText = 'Top Rated'; break;
+            }
+            summary.push(sortText);
+            
+            // Update the display
+            statusElement.textContent = summary.join(' • ');
+            
+            console.log('Filter summary updated:', statusElement.textContent); // Debug
+        }
+        
+        removeFilter(type) {
+            console.log('Removing filter:', type); // Debug
+            
+            switch(type) {
+                case 'category':
+                    this.filters.category = 'all';
+                    this.resetFilterOptions('categoryFilter', 'all');
+                    break;
+                case 'fragrance':
+                    this.filters.fragrance = null;
+                    this.resetFilterOptions('fragranceFilter');
+                    break;
+                case 'volume':
+                    this.filters.volume = 'all';
+                    this.resetVolumeOptions();
+                    break;
+                case 'price':
+                    this.filters.maxPrice = 200;
+                    const priceSlider = document.getElementById('priceSlider');
+                    if (priceSlider) {
+                        priceSlider.value = 200;
+                        document.getElementById('currentPrice').textContent = '200';
+                    }
+                    break;
+                case 'sort':
+                    this.filters.sort = 'newest';
+                    this.resetFilterOptions('sortFilter', 'newest');
+                    break;
+            }
+            
+            this.updateUI();
+            this.applyFilters();
+        }
+        
+        resetFilterOptions(filterId, activeValue = null) {
+            const section = document.getElementById(filterId);
+            if (!section) return;
+            
+            const options = section.querySelectorAll('.filter-option');
+            options.forEach(option => {
+                option.classList.remove('active');
+                
+                if (activeValue) {
+                    if (option.dataset.filter === activeValue || 
+                        option.dataset.fragrance === activeValue ||
+                        option.dataset.sort === activeValue) {
+                        option.classList.add('active');
+                    }
+                }
+            });
+        }
+        
+        resetVolumeOptions() {
+            const section = document.getElementById('volumeFilter');
+            if (!section) return;
+            
+            const options = section.querySelectorAll('.volume-option');
+            options.forEach(option => {
+                option.classList.remove('active');
+                if (option.dataset.volume === 'all') {
+                    option.classList.add('active');
+                }
+            });
+        }
+        
+        clearAllFilters() {
+            console.log('Clearing all filters'); // Debug
+            
+            this.filters = {
+                category: 'all',
+                fragrance: null,
+                volume: 'all',
+                maxPrice: 200,
+                sort: 'newest'
+            };
+            
+            // Reset UI
+            this.resetFilterOptions('categoryFilter', 'all');
+            this.resetFilterOptions('fragranceFilter');
+            this.resetFilterOptions('sortFilter', 'newest');
+            this.resetVolumeOptions();
+            
+            const priceSlider = document.getElementById('priceSlider');
+            if (priceSlider) {
+                priceSlider.value = 200;
+                document.getElementById('currentPrice').textContent = '200';
+            }
+            
+            this.updateUI();
+            this.applyFilters();
+        }
+        
+        applyFilters() {
+            console.log('Applying filters:', this.filters); // Debug
+            
+            // Show loading state
+            const loading = document.querySelector('.loading');
+            if (loading) {
+                loading.style.display = 'flex';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    loading.style.display = 'none';
+                    console.log('Filters applied successfully'); // Debug
+                }, 800);
+            }
+            
+            // Visual feedback on apply button
+            const applyBtn = document.getElementById('applyFilters');
+            if (applyBtn) {
+                const originalHTML = applyBtn.innerHTML;
+                applyBtn.innerHTML = '<i class="fas fa-check"></i> Applied!';
+                applyBtn.style.background = 'linear-gradient(135deg, #05c46b, #00b894)';
+                
+                setTimeout(() => {
+                    applyBtn.innerHTML = originalHTML;
+                    applyBtn.style.background = 'linear-gradient(135deg, #ff4757, #ff6b81)';
+                }, 1500);
+            }
+        }
+        
+        updateProductCount() {
+            // This would normally come from your API
+            let baseCount = 18;
+            
+            if (this.filters.category !== 'all') baseCount = 12;
+            if (this.filters.fragrance) baseCount = 8;
+            if (this.filters.volume && this.filters.volume !== 'all') baseCount = 6;
+            if (this.filters.maxPrice < 100) baseCount = 4;
+            
+            document.getElementById('resultsCount').textContent = baseCount;
+            return baseCount;
+        }
+    }
+    
+    // Initialize filter system
+    let filterSystem;
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('Initializing filter system...'); // Debug
+        
+        filterSystem = new PerfumeFilterSystem();
+        
+        // ==== FIX: Improved dropdown hover behavior ====
+        setTimeout(() => {
+            document.querySelectorAll('.filter-section').forEach(section => {
+                let hideTimeout;
+                
+                section.addEventListener('mouseenter', () => {
+                    clearTimeout(hideTimeout);
+                    section.classList.add('active');
+                });
+                
+                section.addEventListener('mouseleave', (e) => {
+                    // Check if mouse is moving to dropdown
+                    const relatedTarget = e.relatedTarget;
+                    const dropdown = section.querySelector('.filter-content');
+                    
+                    // If moving to dropdown or its children, don't hide
+                    if (relatedTarget && dropdown && 
+                        (dropdown.contains(relatedTarget) || 
+                         relatedTarget === dropdown)) {
+                        return; // Don't hide, mouse moved to dropdown
+                    }
+                    
+                    hideTimeout = setTimeout(() => {
+                        section.classList.remove('active');
+                    }, 150); // 150ms delay before hiding
+                });
+                
+                // Also handle dropdown hover
+                const content = section.querySelector('.filter-content');
+                if (content) {
+                    content.addEventListener('mouseenter', () => {
+                        clearTimeout(hideTimeout);
+                        section.classList.add('active');
+                    });
+                    
+                    content.addEventListener('mouseleave', () => {
+                        hideTimeout = setTimeout(() => {
+                            section.classList.remove('active');
+                        }, 100);
+                    });
+                }
+            });
+        }, 500); // Wait 500ms for everything to load
+        
+        console.log('Filter system initialized'); // Debug
+    });
+    
+    // Debug helper: Check if elements exist
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('Checking elements...');
+        console.log('filterTags element:', document.getElementById('filterTags'));
+        console.log('filterSummary element:', document.getElementById('filterSummary'));
+        console.log('All filter-options:', document.querySelectorAll('.filter-option').length);
+        console.log('All volume-options:', document.querySelectorAll('.volume-option').length);
+    });
+</script>
+</body>
+</html>
