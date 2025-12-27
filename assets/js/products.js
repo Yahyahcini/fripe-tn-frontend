@@ -148,8 +148,7 @@ function renderProducts(containerId, products) {
     container.innerHTML = products.map(product => `
         <div class="product-card" data-id="${product.id}">
             ${product.badge ? `<div class="product-badge">${product.badge}</div>` : ''}
-            <img src="${product.image}"  class="product-image"
-                 onerror="this.src='assets/images/default-product.jpg'">
+            <img src="${product.image}"  class="product-image">
             <div class="product-info">
                 <div class="product-header">
                     <h3 class="product-name">${product.name}</h3>
@@ -504,3 +503,4 @@ window.refreshProducts = function() {
 // Make functions available globally
 window.renderProductsWithPagination = renderProductsWithPagination;
 window.loadAllProductsFromStrapi = loadAllProductsFromStrapi;
+
