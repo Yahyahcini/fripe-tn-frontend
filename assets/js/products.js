@@ -148,7 +148,7 @@ function renderProducts(containerId, products) {
     container.innerHTML = products.map(product => `
         <div class="product-card" data-id="${product.id}">
             ${product.badge ? `<div class="product-badge">${product.badge}</div>` : ''}
-            <img src="${product.image}" alt="${product.name}" class="product-image"
+            <img src="${product.image}"  class="product-image"
                  onerror="this.src='assets/images/default-product.jpg'">
             <div class="product-info">
                 <div class="product-header">
